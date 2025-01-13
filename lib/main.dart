@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tp6/AppBar/appbar.dart';
 
+import 'custom_icons.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -32,13 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  int pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -52,24 +48,39 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: [
+        const Center(
+          child: Text('Accueil'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        const Center(
+          child: Text('Albums'),
+        ),
+        const Center(
+          child: Text('Paramètres'),
+        ),
+      ][pageIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: false,
+        currentIndex: pageIndex,
+        onTap: (value) {
+          setState(() {
+            pageIndex = value;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.home),
+            label: 'Accueil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.note),
+            label: 'Liste des albums',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.settings),
+            label: 'Paramètres',
+          ),
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
