@@ -1,41 +1,74 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:tp6/AppBar/appbar.dart';
+import 'package:tp6/settings.dart';
 
 import 'custom_icons.dart';
+import 'home.dart';
+
+class ThemeController extends ValueNotifier<ThemeMode> {
+  ThemeController() : super(ThemeMode.light);
+
+  void toggleTheme() {
+    value = value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  }
+}
+
+final themeController = ThemeController();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final themeStr = await rootBundle.loadString('assets/themeAlbum.json');
-  final themeJson = jsonDecode(themeStr);
-  final theme = ThemeDecoder.decodeThemeData(themeJson)!;
+  final lightThemeStr = await rootBundle.loadString('themeAlbum.json');
+  final lightThemeJson = jsonDecode(lightThemeStr);
+  final lightTheme = ThemeDecoder.decodeThemeData(lightThemeJson)!;
 
-  runApp(MyApp(theme: theme));
+  final darkThemeStr = await rootBundle.loadString('themeAlbum_dark.json');
+  final darkThemeJson = jsonDecode(darkThemeStr);
+  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson)!.copyWith();
+
+  runApp(MyApp(
+    lightTheme: lightTheme,
+    darkTheme: darkTheme,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.theme});
+  const MyApp({
+    super.key,
+    required this.lightTheme,
+    required this.darkTheme,
+  });
 
-  final ThemeData theme;
+  final ThemeData lightTheme;
+  final ThemeData darkTheme;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: theme,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeController,
+      builder: (context, themeMode, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Gestion des albums',
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: themeMode,
+          home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          themeAnimationDuration: Duration.zero,
+        );
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+  });
 
   final String title;
 
@@ -50,24 +83,23 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
-        title: 'Flutter demo',
+        title: 'Gestion des albums',
         actions: [
           IconButton(
-            icon: const Icon(Icons.abc),
-            onPressed: () {},
+            icon: const Icon(Icons.lightbulb),
+            onPressed: () {
+              // Utiliser l'instance globale pour changer le thème
+              themeController.toggleTheme();
+            },
           ),
         ],
       ),
       body: [
-        const Center(
-          child: Text('Accueil'),
-        ),
+        const HomeView(),
         const Center(
           child: Text('Albums'),
         ),
-        const Center(
-          child: Text('Paramètres'),
-        ),
+        const SettingsView(),
       ][pageIndex],
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: false,
@@ -91,7 +123,14 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Paramètres',
           ),
         ],
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+      floatingActionButton: Visibility(
+        visible: pageIndex == 0,
+        child: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {},
+        ),
+      ),
     );
   }
 }
