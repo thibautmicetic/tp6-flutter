@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:tp6/AppBar/appbar.dart';
+import 'package:tp6/albums.dart';
 import 'package:tp6/settings.dart';
 
 import 'custom_icons.dart';
@@ -96,9 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: [
         const HomeView(),
-        const Center(
-          child: Text('Albums'),
-        ),
+        const AlbumsView(),
         const SettingsView(),
       ][pageIndex],
       bottomNavigationBar: BottomNavigationBar(

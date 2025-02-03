@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:tp6/carousel.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -10,6 +11,21 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  List<Container> list = [
+    Container(
+      width: double.infinity,
+      child: Image.asset("images/Metallica.jpg"),
+    ),
+    Container(
+      width: double.infinity,
+      child: Image.asset("images/Kill'em all.jpg"),
+    ),
+    Container(
+      width: double.infinity,
+      child: Image.asset("images/Hardwired.jpg"),
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -37,6 +53,8 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         ),
+        const SizedBox(height: 10,),
+        Carousel(carouselItems: list),
         Card(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
