@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:tp6/AppBar/appbar.dart';
 import 'package:tp6/albums.dart';
+import 'package:tp6/errorPage.dart';
+import 'package:tp6/infoAlbum.dart';
 import 'package:tp6/settings.dart';
 
 import 'custom_icons.dart';
@@ -57,8 +59,33 @@ class MyApp extends StatelessWidget {
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeMode,
-          home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          home: const MyHomePage(),
           themeAnimationDuration: Duration.zero,
+          onGenerateRoute: (settings) {
+            if (settings.name == '') {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return const MyHomePage();
+                },
+              );
+            }
+            if (settings.name == '/infoAlbum') {
+              return MaterialPageRoute(
+                builder: (context) {
+                  final args = settings.arguments as Map<String, String>;
+                  return InfoAlbum(
+                    nomAlbum: args['nomAlbum']!,
+                    description: args['description']!,
+                    nomGroupe: args['nomGroupe']!,
+                    image: args['image']!,
+                  );
+                },
+              );
+            }
+            return MaterialPageRoute(
+              builder: (context) => const ErrorPage(),
+            );
+          },
         );
       },
     );
@@ -68,10 +95,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
     super.key,
-    required this.title,
   });
-
-  final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();

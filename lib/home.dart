@@ -53,7 +53,9 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Carousel(carouselItems: list),
         Card(
           child: Container(
